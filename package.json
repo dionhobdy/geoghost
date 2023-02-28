@@ -1,0 +1,19 @@
+{
+  "name": "geoghost",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dion Hobdy",
+  "license": "ISC",
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "chalk": "^5.2.0",
+    "geocoder": "^0.2.3",
+    "geolib": "^3.3.3",
+    "geolocation": "^0.2.0",
+    "prompts": "^2.4.2"
+  }
+}
