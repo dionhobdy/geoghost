@@ -1,7 +1,14 @@
 const ansi = require('ansi-colors');
 const prompts = require('prompts'); // CLI package calls
 
-const geocoder = require('geocoder');
+const nodeGeo = require('node-geocoder');
+const nodeGeoOptions = {
+    provider: 'openstreetmap',
+    fetch: customFetchImplementation,
+    apiKey: 'API_KEY',
+    formatter: null
+};
+const geocoder = nodeGeo(nodeGeoOptions);
 const geolib = require('geolib');
 const geolocation = require('geolocation'); // geo locating package calls
 
