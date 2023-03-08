@@ -4,8 +4,7 @@ const prompts = require('prompts'); // CLI package calls
 const nodeGeo = require('node-geocoder');
 const nodeGeoOptions = {
     provider: 'openstreetmap',
-    fetch: customFetchImplementation,
-    apiKey: 'API_KEY',
+    apiKey: '9JrIeZa95cO9EkM1PeoqPvNa7kaz1FYfyjiCiKFN',
     formatter: null
 };
 const geocoder = nodeGeo(nodeGeoOptions);
@@ -24,23 +23,21 @@ console.log(
 );
 
 (async () => {
-    const response = await prompts({
+    let res = await prompts({
         type: 'text',
         neame: 'input',
         message: 'enter geofence location'
     });
-    console.log(response.input);
-    geocoder.geocode(`${response.input}`, function (err, data) {
+    geocoder.geocode(`${res.undefined}`, function (err, data) {
         try {
             console.log(data);
             let fence = {
-                lat:true,
-                lng: true,
+                lat: data.latitude[0],
+                lng: data.longitude[0],
                 radius: 200
             }; // create a geofence object
-            geolib.getPreciseDistance(
-                { latitude: fence.lat, longitude: fence.lng }
-            ); // measure the distance to the geofence location
+            console.log(`${ansi.cyan('lat')} - ${fence.latitude} ${ansi.cyan('lng')} - ${fence.longitude}`);
+            console.log(res.undefined);
         } catch(err) {
             console.log(err);
         }
