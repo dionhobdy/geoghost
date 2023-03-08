@@ -4,7 +4,7 @@ const prompts = require('prompts'); // CLI package calls
 const nodeGeo = require('node-geocoder');
 const nodeGeoOptions = {
     provider: 'openstreetmap',
-    apiKey: '9JrIeZa95cO9EkM1PeoqPvNa7kaz1FYfyjiCiKFN',
+    apiKey: '',
     formatter: null
 };
 const geocoder = nodeGeo(nodeGeoOptions);
