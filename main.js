@@ -30,14 +30,17 @@ console.log(
     });
     geocoder.geocode(`${res.undefined}`, function (err, data) {
         try {
-            console.log(data);
-            let fence = {
-                lat: data.latitude[0],
-                lng: data.longitude[0],
-                radius: 200
-            }; // create a geofence object
-            console.log(`${ansi.cyan('lat')} - ${fence.latitude} ${ansi.cyan('lng')} - ${fence.longitude}`);
-            console.log(res.undefined);
+            if (data[0].streetNumber == undefined) {
+                console.log(`${ansi.red('err')} full address needed for the geofence`);
+            } else {
+                console.log(data);
+                let fence = {
+                    lat: data[0].latitude,
+                    lng: data[0].longitude,
+                    radius: 200
+                }; // create a geofence object
+                console.log(`${ansi.cyan('lat')}  ${fence.lat} ${ansi.cyan('lng')}  ${fence.lng}`);
+            }
         } catch(err) {
             console.log(err);
         }
