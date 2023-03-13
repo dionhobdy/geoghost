@@ -11,6 +11,8 @@ const geocoder = nodeGeo(nodeGeoOptions);
 const geolib = require('geolib');
 const geolocation = require('geolocation'); // geo locating package calls
 
+const browserEnv = require('browser-env'); // misc package calls
+
 console.log(
 ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________ 
  /    | /  _]/   \ /     |  |  |/   \ /    |      |
@@ -46,15 +48,9 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
                 }; // create a geofence object
                 console.log(`${ansi.cyan('destination')} ${fence.num} ${fence.name} ${fence.city} ${fence.state} ${fence.zipcode}`);
                 console.log(`${ansi.cyan('lat')}  ${fence.lat} ${ansi.cyan('lng')}  ${fence.lng}`);
-                new geolocation.Watcher();
-                watcher.start();
-                geolocation.getCurrentPosition(function (err, position) {
-                    if (err) {
-                        console.log(`${ansi.red('err')} ` + err);
-                    } else {
-                        console.log(position);
-                    }
-                })
+                geolib.getDistance(
+                    { latitude: data[0].latitude, longitude: data[0].longitude }
+                );
             }
         } catch(err) {
             console.log(err);
