@@ -1,10 +1,13 @@
+require('dotenv').config();
+    // dotenv module call
+
 const ansi = require('ansi-colors');
 const prompts = require('prompts'); // CLI package calls
 
 const nodeGeo = require('node-geocoder');
 const nodeGeoOptions = {
     provider: 'openstreetmap',
-    apiKey: '',
+    apiKey: process.env.API_KEY,
     formatter: null
 };
 const geocoder = nodeGeo(nodeGeoOptions);
@@ -32,26 +35,29 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
     });
     geocoder.geocode(`${res.undefined}`, function (err, data) {
         try {
-            if (data[0].streetNumber == undefined) {
-                console.log(`${ansi.red('err')} full address needed for the geofence`);
-            } else {
-               // console.log(data[0]);
-                let fence = {
-                    num: data[0].streetNumber,
-                    name: data[0].streetName,
-                    city: data[0].city,
-                    state: data[0].state,
-                    zipcode: data[0].zipcode,
-                    lat: data[0].latitude,
-                    lng: data[0].longitude,
-                    radius: 15 // radius is measured in meters
-                }; // create a geofence object
-                console.log(`${ansi.cyan('destination')} ${fence.num} ${fence.name} ${fence.city} ${fence.state} ${fence.zipcode}`);
-                console.log(`${ansi.cyan('lat')}  ${fence.lat} ${ansi.cyan('lng')}  ${fence.lng}`);
-                geolib.getDistance(
-                    { latitude: data[0].latitude, longitude: data[0].longitude }
-                );
-            }
+                let fence = new Map();
+                fence.set('lat', data[0].latitude);
+                fence.set('lng', data[0].longitude);
+                fence.set('rad', 15);
+                fence.set('goal', false);
+
+                let info = new Map();
+                info.set('num', data[0].streetNumber);
+                info.set('name', data[0].streetName);
+                info.set('city', data[0].city);
+                info.set('state', data[0].state);
+                info.set('zip', data[0].zipcode);
+                
+                if (info.get('num') == undefined ) { 
+                    console.log(`[${ansi.red('err')}] invalid destination input`); 
+                    process.exit();
+                } else {
+                    console.log(`[${ansi.cyan('marker')}] ${info.get('num')} ${info.get('name')} ${info.get('city')} ${info.get('state')} ${info.get('zip')}`);
+                    console.log(`[${ansi.cyan('marker location')}] ${fence.get('lat')} ${fence.get('lng')}`);
+                }
+
+                while (fence.get('rad') == false) { setTimeout(() => {console.log(`[${ansi.cyan('current')}]`);}, '15000') }
+            
         } catch(err) {
             console.log(err);
         }
