@@ -7,7 +7,7 @@ const prompts = require('prompts'); // CLI package calls
 const nodeGeo = require('node-geocoder');
 const nodeGeoOptions = {
     provider: 'openstreetmap',
-    apiKey: process.env.API_KEY,
+    apiKey: process.env.KEY,
     formatter: null
 };
 const geocoder = nodeGeo(nodeGeoOptions);
@@ -39,7 +39,12 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
                 fence.set('lat', data[0].latitude);
                 fence.set('lng', data[0].longitude);
                 fence.set('rad', 15);
+                    // measured in meters
                 fence.set('goal', false);
+                    // create a generative geofence via map
+
+                let feet = Math.floor(fence.get('rad') * 3.28);
+                    // convert the radius measurement into feet and round the number
 
                 let info = new Map();
                 info.set('num', data[0].streetNumber);
@@ -47,19 +52,26 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
                 info.set('city', data[0].city);
                 info.set('state', data[0].state);
                 info.set('zip', data[0].zipcode);
+                    // gather geofence data via map
                 
                 if (info.get('num') == undefined ) { 
                     console.log(`[${ansi.red('err')}] invalid destination input`); 
                     process.exit();
+                        // inform the user that their input is not valid and exit process
                 } else {
-                    console.log(`[${ansi.cyan('marker')}] ${info.get('num')} ${info.get('name')} ${info.get('city')} ${info.get('state')} ${info.get('zip')}`);
+                    let reached = ansi.red(fence.get('goal'));
+                    if (fence.get('goal') == true) { reached = ansi.green(fence.get('goal'));}
+                    console.log(`[${ansi.cyan('marker address')}] ${info.get('num')} ${info.get('name')} ${info.get('city')} ${info.get('state')} ${info.get('zip')}`);
                     console.log(`[${ansi.cyan('marker location')}] ${fence.get('lat')} ${fence.get('lng')}`);
+                    console.log(`[${ansi.cyan('marker radius')}] ${fence.get('rad')} meters / ${feet} feet`);
+                    console.log(`[${ansi.cyan('marker reached')}] ${reached}`);
+                        // output the address, latitude/longitude, radius and status of the marker
                 }
-
-                while (fence.get('rad') == false) { setTimeout(() => {console.log(`[${ansi.cyan('current')}]`);}, '15000') }
-            
+                    // checks if there is street number attached 
+                    
         } catch(err) {
-            console.log(err);
+            console.log(`${[ansi.red('err')]} ` + err);
         }
+            // return err message if prompts catches an error
     });
 })();
