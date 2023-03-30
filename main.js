@@ -1,6 +1,14 @@
 require('dotenv').config();
     // dotenv module call
 
+const express = require('express');
+const app = express();
+app.get('/', function (res) {
+    res.send('connection successful - return to terminal')
+});
+app.listen(5000); 
+let portNum = 5000;// express server setup
+
 const ansi = require('ansi-colors');
 const prompts = require('prompts'); // CLI package calls
 
@@ -25,7 +33,8 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
 |     |     |     |     |  |  |     |\    | |  |  
 |___,_|_____|\___/ |___,_|__|__|\___/  \ ___| |__|  
                                                  `)
-);
+); // title log
+console.log(`[${ansi.green('port')}] ${portNum}`); // print the listening port number
 
 (async () => {
     let res = await prompts({
