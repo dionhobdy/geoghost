@@ -14,7 +14,7 @@ const geocoder = nodeGeo(nodeGeoOptions);
 const geolib = require('geolib');
 const geolocation = require('geolocation'); // geo locating package calls
 
-const browserEnv = require('browser-env'); // misc package calls
+const browserEnv = require('browser-env')(['navigator']); // misc package calls
 
 console.log(
 ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________ 
@@ -68,7 +68,10 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
                         // output the address, latitude/longitude, radius and status of the marker
                 }
                     // checks if there is street number attached 
-                    
+                let dataCallback = (position) => { console.log(position); };
+                let errCallback = (err) => { console.log(err); };
+
+                navigator.geolocation.getCurrentPosition(dataCallback, errCallback);
         } catch(err) {
             console.log(`${[ansi.red('err')]} ` + err);
         }
