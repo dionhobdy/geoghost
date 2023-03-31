@@ -26,7 +26,7 @@ const geolib = require('geolib');
 const geolocation = require('geolocation'); 
     // geo locating package calls
 
-const browserEnv = require('browser-env')(['navigator']); 
+require('browser-env')(['navigator']); 
     // misc package calls
 
 console.log(
@@ -87,7 +87,7 @@ console.log(`[${ansi.green('port')}] ${portNum}`);
                 
                 let dataCallback = (position) => { console.log(position); };
                 let errCallback = (err) => { console.log(err); };
-                geolocation.getCurrentPosition(dataCallback, errCallback);
+                navigator.geolocation.getCurrentPosition(dataCallback, errCallback);
                     // obtain and output user position / log err
 
         } catch(err) {
