@@ -3,14 +3,16 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-app.get('/', function (res) {
+app.get('/', function (req, res) {
     res.send('connection successful - return to terminal')
 });
 app.listen(5000); 
-let portNum = 5000;// express server setup
+let portNum = 5000;
+    // express server setup
 
 const ansi = require('ansi-colors');
-const prompts = require('prompts'); // CLI package calls
+const prompts = require('prompts'); 
+    // CLI package calls
 
 const nodeGeo = require('node-geocoder');
 const nodeGeoOptions = {
@@ -18,11 +20,14 @@ const nodeGeoOptions = {
     apiKey: process.env.KEY,
     formatter: null
 };
+    // openstreetmap api key
 const geocoder = nodeGeo(nodeGeoOptions);
 const geolib = require('geolib');
-const geolocation = require('geolocation'); // geo locating package calls
+const geolocation = require('geolocation'); 
+    // geo locating package calls
 
-const browserEnv = require('browser-env')(['navigator']); // misc package calls
+const browserEnv = require('browser-env')(['navigator']); 
+    // misc package calls
 
 console.log(
 ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________ 
@@ -33,8 +38,10 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
 |     |     |     |     |  |  |     |\    | |  |  
 |___,_|_____|\___/ |___,_|__|__|\___/  \ ___| |__|  
                                                  `)
-); // title log
-console.log(`[${ansi.green('port')}] ${portNum}`); // print the listening port number
+); 
+    // title log
+console.log(`[${ansi.green('port')}] ${portNum}`); 
+    // print the listening port number
 
 (async () => {
     let res = await prompts({
@@ -77,10 +84,12 @@ console.log(`[${ansi.green('port')}] ${portNum}`); // print the listening port n
                         // output the address, latitude/longitude, radius and status of the marker
                 }
                     // checks if there is street number attached 
+                
                 let dataCallback = (position) => { console.log(position); };
                 let errCallback = (err) => { console.log(err); };
+                geolocation.getCurrentPosition(dataCallback, errCallback);
+                    // obtain and output user position / log err
 
-                navigator.geolocation.getCurrentPosition(dataCallback, errCallback);
         } catch(err) {
             console.log(`${[ansi.red('err')]} ` + err);
         }
