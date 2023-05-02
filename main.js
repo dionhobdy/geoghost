@@ -1,17 +1,9 @@
 require('dotenv').config();
     // dotenv module call
 
-const express = require('express');
-const app = express();
-app.get('/', function (req, res) {
-    res.send('connection successful - return to terminal')
-});
-app.listen(5000); 
-let portNum = 5000;
-    // express server setup
-
 const ansi = require('ansi-colors');
-const prompts = require('prompts'); 
+const prompts = require('prompts');
+const cli_table = require('cli-table3');
     // CLI package calls
 
 const nodeGeo = require('node-geocoder');
@@ -26,8 +18,15 @@ const geolib = require('geolib');
 const geolocation = require('geolocation'); 
     // geo locating package calls
 
-require('browser-env')(['navigator']); 
+const browserEnv = require('browser-env')(['navigator']);
+const http = require('http');
+const fs = require('fs');
     // misc package calls
+
+let table = new cli_table({
+    chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''}
+});
+    // set the table for user information
 
 console.log(
 ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________ 
@@ -40,8 +39,6 @@ ansi.cyan(`  ____   ___  ___   ____ __ __  ___   ___________
                                                  `)
 ); 
     // title log
-console.log(`[${ansi.green('port')}] ${portNum}`); 
-    // print the listening port number
 
 (async () => {
     let res = await prompts({
@@ -77,19 +74,28 @@ console.log(`[${ansi.green('port')}] ${portNum}`);
                 } else {
                     let reached = ansi.red(fence.get('goal'));
                     if (fence.get('goal') == true) { reached = ansi.green(fence.get('goal'));}
-                    console.log(`[${ansi.cyan('marker address')}] ${info.get('num')} ${info.get('name')} ${info.get('city')} ${info.get('state')} ${info.get('zip')}`);
-                    console.log(`[${ansi.cyan('marker location')}] ${fence.get('lat')} ${fence.get('lng')}`);
-                    console.log(`[${ansi.cyan('marker radius')}] ${fence.get('rad')} meters / ${feet} feet`);
-                    console.log(`[${ansi.cyan('marker reached')}] ${reached}`);
+                    table.push(
+                        [ansi.cyan('marker address'), `${info.get('num')} ${info.get('name')} ${info.get('city')} ${info.get('state')} ${info.get('zip')}`],
+                        [ansi.cyan('marker location'), `${fence.get('lat')} ${fence.get('lng')}`],
+                        [ansi.cyan('marker radius'), `${fence.get('rad')} meters / ${feet} feet`], 
+                        [ansi.cyan('marker reached'), reached]
+                    );
+                    console.log(table.toString());
                         // output the address, latitude/longitude, radius and status of the marker
-                }
-                    // checks if there is street number attached 
-                
-                let dataCallback = (position) => { console.log(position); };
-                let errCallback = (err) => { console.log(err); };
-                navigator.geolocation.getCurrentPosition(dataCallback, errCallback);
-                    // obtain and output user position / log err
 
+                    let zoom = 13;
+                    let size = '400x400';
+                    let mapURL = `http://maps.openstreetmap.org/staticmap?center=${fence.get('lat')},${fence.get('lng')}&zoom=${zoom}&size=${size}`;
+
+                    http.get(mapURL, res => {
+                        const file = fs.createWriteStream('map.jpg');
+                        res.pipe(file);
+                      });
+
+                    console.log(mapURL);
+                }
+                    // checks if there is street number attached else output destination
+              
         } catch(err) {
             console.log(`${[ansi.red('err')]} ` + err);
         }
